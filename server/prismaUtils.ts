@@ -1,6 +1,6 @@
 export const isDev = () => process.env.NODE_ENV === "development" || undefined;
 
-import { DEBUG_CLIENT, User, Task } from "../main.ts";
+import { DEBUG_CLIENT, User, Task } from "./prismaClient.ts";
 
 export const __user_delete_all = isDev()
   ? async () => {

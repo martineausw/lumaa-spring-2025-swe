@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { webcrypto } from "crypto";
-import { isDev } from "./dev/utils.ts";
+import { isDev } from "./prismaUtils.ts";
 import { devLog } from "utils/logger.ts";
 
 const prisma = new PrismaClient();
