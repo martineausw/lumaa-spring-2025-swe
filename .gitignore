@@ -1,4 +1,6 @@
-.prettierrc
+.env
 
 node_modules/
+
 notes/
+.prettierrc

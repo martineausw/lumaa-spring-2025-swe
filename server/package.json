@@ -1,0 +1,32 @@
+{
+  "name": "lumaa-task-management-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "dev-start-db": "nodemon index.js",
+    "dev-start-content": "nodemon index.js",
+    "dev-migrate": "prisma migrate dev --name development",
+    "test": "node --test"
+  },
+  "keywords": [],
+  "author": "Seth Martineau",
+  "license": "ISC",
+  "type": "commonjs",
+  "description": "Task management web app built using Express and PostgreSQL",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.5",
+    "nodemon": "^3.1.9",
+    "prisma": "^6.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.3"
+  }
+}

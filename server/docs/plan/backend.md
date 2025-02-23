@@ -12,6 +12,7 @@
 - prisma
 - typescript
 - ts-node
+- @types/node
 
 ## PostgreSQL
 
@@ -91,7 +92,7 @@
 
   1. Get access token from header
   2. Deserialize user access token with access secret key
-  3. Get all from tasks table
+  3. Retrieve tasks from database
 
 - `POST /tasks`
 
@@ -102,20 +103,18 @@
   - title
   - description
 
-  4. Store in tasks table
-
 - `PUT /tasks/:id`
 
   1. Get access token from header
   2. Deserialize user access token with access secret key
   3. Get id from url
-  4. Update task with id in table
+  4. Retrieve task with id from database
 
 - `DELETE /tasks/:id`
   1. Get access token from header
   2. Deserialize user access token with access secret key
   3. Get id from url
-  4. Delete task with id from table
+  4. Delete task with id from database
 
 ### Middleware
 
