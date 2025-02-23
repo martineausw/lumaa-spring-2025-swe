@@ -11,8 +11,8 @@ export const __user_delete_all = isDev()
 
 export const __task_delete_all = isDev()
   ? async () => {
-      console.warn("[dev] clearing tasks table");
-      await DEBUG_CLIENT!.user.deleteMany();
+      console.warn("[dev] __task_delete_all");
+      await DEBUG_CLIENT!.task.deleteMany();
     }
   : undefined;
 

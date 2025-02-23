@@ -33,22 +33,45 @@ export type Task = {
   userId: string;
 };
 
-export async function insertUser(
+const users = prisma.user;
+
+export async function createUser(
   username: string,
   password: string
-): Promise<User> {
+): Promise<User | null> {
+  return await users.create({
+    data: {
+      username,
+      password,
+    },
+  });
+}
+
+export async function readUserId(id: string): Promise<User | null> {
+  return await users.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+export async function readUserUsername(username: string): Promise<User | null> {
+  return await users.findUnique({
+    where: {
+      username,
+    },
+  });
+}
+
+export async function readTask(id: string): Promise<Task> {
   return new Promise(() => {});
 }
 
-export async function selectUserWithId(id: string): Promise<User> {
+export async function readTasks(userId?: string): Promise<Task[]> {
   return new Promise(() => {});
 }
 
-export async function selectUserWithUsername(username: string): Promise<User> {
-  return new Promise(() => {});
-}
-
-export async function insertTask(
+export async function createTask(
   userId: string,
   title: string,
   description?: string
@@ -61,11 +84,3 @@ export async function updateTask(id: string, task: object): Promise<Task> {
 }
 
 export async function deleteTask(id: string) {}
-
-export async function selectTask(id: string): Promise<Task> {
-  return new Promise(() => {});
-}
-
-export async function selectTasks(userId?: string): Promise<Task[]> {
-  return new Promise(() => {});
-}
