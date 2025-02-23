@@ -1,12 +1,11 @@
 import { PrismaClient } from "@prisma/client";
+import { devLog } from "utils/logger.js";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  if (process.env.NODE_ENV === "development") {
-    devLog("clearing user table");
-    await prisma.user.deleteMany();
-  }
+  devLog("clearing user table");
+  await prisma.user.deleteMany();
 }
 
 main()
@@ -17,7 +16,37 @@ main()
     await prisma.$disconnect;
   });
 
-function devLog(...objects: any[]) {
-  if (process.env.NODE_ENV !== "development") return;
-  console.log("[dev]", import.meta.filename, ...objects);
+export const DEBUG_CLIENT =
+  process.env.NODE_ENV === "development" ? prisma : undefined;
+
+export type User = {
+  id: string;
+  username: string;
+  password: string;
+};
+
+export type Task = {
+  id: string;
+  title: string;
+  description: string | null;
+  isComplete: boolean;
+  userId: string;
+};
+
+export async function createUser(username: string, password: string) {}
+export async function getUser(username: string) {
+  return await undefined;
+}
+export async function createTask(
+  userId: string,
+  title: string,
+  description?: string
+) {}
+export async function updateTask(id: string, task: object) {}
+export async function deleteTask(id: string) {}
+export async function getTask(id: string) {
+  return await undefined;
+}
+export async function getTasks(userId?: string) {
+  return await [];
 }

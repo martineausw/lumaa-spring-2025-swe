@@ -6,10 +6,10 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev-start-db": "tsx watch db/main.ts",
-    "dev-start-content": "tsx watch main.ts",
-    "dev-migrate": "prisma migrate dev --name development",
-    "test": "node --test"
+    "dev-content-start": "tsx watch main.ts",
+    "dev-db-start": "tsx watch db/main.ts",
+    "dev-db-migrate": "prisma migrate dev --name development",
+    "dev-db-test": "node --import tsx --test db/*.test.ts"
   },
   "keywords": [],
   "author": "Seth Martineau",
