@@ -30,131 +30,152 @@ import {
   __task_create,
 } from "./dev/utils.ts";
 
+const createExpectedUser = (index: number) => {
+  return {
+    id: `id${index}`,
+    username: `username${index}`,
+    password: `password${index}`,
+  };
+};
+
+const createExpectedTask = (
+  index: number,
+  userId: number,
+  isComplete?: boolean
+) => {
+  return {
+    id: `id${index}`,
+    title: `title${index}`,
+    description: `description${index}`,
+    isComplete: isComplete ?? false,
+    userId: `id${userId}`,
+  };
+};
+
 console.log("conducting tests");
 describe("User", async () => {
-  it("should create a user", () => {
-    __user_delete_all!();
+  it("should create a user", async () => {
+    await __user_delete_all!();
 
-    createUser("foo", "bar");
+    const expect = createExpectedUser(0);
+    const actual = await createUser("username0", "password0");
+    const count = await __user_count!();
 
-    const count = __user_count!();
     assert.strictEqual(count, 1);
+    assert.strictEqual(actual.username, expect.username);
+    assert.strictEqual(actual.password, expect.password);
   });
 
   it("should get a user", async () => {
-    __user_delete_all!();
+    await __user_delete_all!();
+    await __user_create!(0);
 
-    const expected = await __user_create!({
-      data: {
-        username: "foo",
-        password: "bar",
-      },
-    });
+    const expect = createExpectedUser(0);
+    const actual = await getUser("username0");
 
-    const actual = await getUser("foo");
-    assert.strictEqual(actual, expected);
+    assert.strictEqual(actual, expect);
   });
 });
 
 describe("Task", async () => {
   it("should create a task", async () => {
-    __user_delete_all!();
-    __task_delete_all!();
+    await __user_create!();
+    await __user_create!(0)!;
 
-    const user: User = await __user_create!({
-      data: {
-        username: "foo",
-        password: "bar",
-      },
-    })!;
+    const expect = createExpectedTask(0, 0);
+    const actual = await createTask("0", "title0", "description0");
+    const count = await __task_count!();
 
-    await createTask(user.id, "foo");
-    const count = __task_count!();
     assert.strictEqual(count, 1);
+    assert.strictEqual(actual.title, expect.title);
+    assert.strictEqual(actual.description, expect.description);
+    assert.strictEqual(actual.isComplete, expect.isComplete);
+    assert.strictEqual(actual.userId, expect.userId);
   });
 
-  it("should update a task", async () => {});
+  it("should update a task", async () => {
+    await __user_delete_all!();
+    await __task_delete_all!();
+    await __user_create!(0);
+    await __task_create!(0);
+
+    const expect = createExpectedTask(0, 0, true);
+    const actual = await updateTask("id0", { isComplete: true });
+
+    assert.strictEqual(actual.title, expect.title);
+    assert.strictEqual(actual.description, expect.description);
+    assert.strictEqual(actual.isComplete, expect.isComplete);
+    assert.strictEqual(actual.userId, expect.userId);
+  });
 
   it("should delete a task", async () => {
-    __user_delete_all!();
-    __task_delete_all!();
+    await __user_delete_all!();
+    await __task_delete_all!();
+    await __user_create!(0);
+    await __task_create!(0);
 
-    const user: User = await __user_create!({
-      data: {
-        username: "foo",
-        password: "bar",
-      },
-    })!;
+    deleteTask("id0");
 
-    const task: Task = await __task_create!({
-      data: {
-        title: "fizz",
-        description: "buzz",
-        userId: user.id,
-      },
-    })!;
-
-    deleteTask(task.id);
     const count = __task_count!();
     assert.strictEqual(count, 0);
   });
 
   it("should get a task", async () => {
-    __user_delete_all!();
-    __task_delete_all!();
+    await __user_delete_all!();
+    await __task_delete_all!();
+    await __user_create!(0)!;
+    await __task_create!(0)!;
 
-    const user: User = await __user_create!({
-      data: {
-        username: "foo",
-        password: "bar",
-      },
-    })!;
+    const expect = createExpectedTask(0, 0, false);
+    const actual = await getTask("id0");
 
-    const task: Task = await __task_create!({
-      data: {
-        title: "fizz",
-        description: "buzz",
-        userId: user.id,
-      },
-    })!;
-
-    const actual = await getTask(task.id);
-
-    assert.strictEqual(actual, task);
+    assert.strictEqual(actual, expect);
   });
 
   it("should get 10 tasks", async () => {
-    __user_delete_all!();
-    __task_delete_all!();
+    await __user_delete_all!();
+    await __task_delete_all!();
+    await __user_create!(0)!;
+    await __task_populate!(10, 0);
 
-    await __user_create!({
-      data: {
-        id: "id0",
-        username: "foo",
-        password: "bar",
-      },
-    })!;
+    const expect = [];
 
-    await __task_populate!(10, "id0");
+    for (let i = 0; i < 10; i++) expect.push(createExpectedTask(i, 0, false));
 
     const actual = await getTasks();
-    assert.strictEqual(actual.length, 10);
+    assert.deepStrictEqual(actual, expect);
   });
 
   it("should get 15 tasks with 5 from each user id", async () => {
-    __task_delete_all!();
+    await __task_delete_all!();
 
     await __user_populate!(15);
-    await __task_populate!(5, "id0");
-    await __task_populate!(5, "id1");
-    await __task_populate!(5, "id2");
+    await __task_populate!(5, 0);
+    await __task_populate!(5, 1);
+    await __task_populate!(5, 2);
 
-    const task0Count = await getTasks("id0");
-    const task1Count = await getTasks("id1");
-    const task2Count = await getTasks("id2");
+    const expect0 = [];
+    const expect1 = [];
+    const expect2 = [];
 
-    assert.strictEqual(task0Count.length, 5);
-    assert.strictEqual(task1Count.length, 5);
-    assert.strictEqual(task2Count.length, 5);
+    for (let i = 0; i < 15; i++) {
+      if (i < 5) {
+        expect0.push(createExpectedTask(i, 0));
+        continue;
+      }
+      if (i < 10) {
+        expect1.push(createExpectedTask(i, 1));
+        continue;
+      }
+      expect2.push(createExpectedTask(i, 2));
+    }
+
+    const actual0 = await getTasks("id0");
+    const actual1 = await getTasks("id1");
+    const actual2 = await getTasks("id2");
+
+    assert.deepStrictEqual(actual0, expect0);
+    assert.deepStrictEqual(actual1, expect1);
+    assert.deepStrictEqual(actual2, expect2);
   });
 });

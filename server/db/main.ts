@@ -33,20 +33,24 @@ export type Task = {
   userId: string;
 };
 
-export async function createUser(username: string, password: string) {}
-export async function getUser(username: string) {
+export async function createUser(username: string, password: string): User {
+  return await undefined;
+}
+export async function getUser(username: string): User {
   return await undefined;
 }
 export async function createTask(
   userId: string,
   title: string,
   description?: string
-) {}
-export async function updateTask(id: string, task: object) {}
-export async function deleteTask(id: string) {}
-export async function getTask(id: string) {
+): Task {
   return await undefined;
 }
-export async function getTasks(userId?: string) {
+export async function updateTask(id: string, task: object) {}
+export async function deleteTask(id: string) {}
+export async function getTask(id: string): Task {
+  return await undefined;
+}
+export async function getTasks(userId?: string): Task[] {
   return await [];
 }

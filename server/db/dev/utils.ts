@@ -31,32 +31,49 @@ export const __task_count = isDev()
   : undefined;
 
 export const __user_create = isDev()
-  ? async (args: any) => {
+  ? async (index?: number) => {
       console.warn("[dev] __user_create");
-      return await DEBUG_CLIENT!.user.create(args);
+      index ??= await __user_count!();
+      return await DEBUG_CLIENT!.user.create({
+        data: {
+          id: `id${index}`,
+          username: `username${index}`,
+          password: `password${index}`,
+        },
+      });
     }
   : undefined;
 
 export const __task_create = isDev()
-  ? async (args: any) => {
+  ? async (userId?: number, isComplete?: boolean, index?: number) => {
       console.warn("[dev] __user_create");
-      return await DEBUG_CLIENT!.task.create(args);
+      userId ??= await __user_count!();
+      index ??= await __task_count!();
+      return await DEBUG_CLIENT!.task.create({
+        data: {
+          id: `id${index}`,
+          title: `title${index}`,
+          description: `description${index}`,
+          userId: `id${userId}`,
+          isComplete: !!isComplete,
+        },
+      });
     }
   : undefined;
 
 export const __task_populate = isDev()
-  ? async (count: number, userId?: string) => {
+  ? async (
+      count: number,
+      userId?: number,
+      isComplete?: boolean,
+      start?: number
+    ) => {
       console.warn("[dev] __task_populate");
-      const taskCount = await __task_count!();
+      start ??= await __task_count!();
       const tasks: Task[] = [];
 
-      for (let i = taskCount; i < count + taskCount; i++) {
-        const task: Task = await __task_create!({
-          id: `id${i}`,
-          title: `title${i}`,
-          description: `description${i}`,
-          userId: userId || `id0`,
-        })!;
+      for (let i = start; i < count + start; i++) {
+        const task: Task = await __task_create!(userId, false, i);
 
         tasks.push(task);
       }
@@ -65,19 +82,14 @@ export const __task_populate = isDev()
   : undefined;
 
 export const __user_populate = isDev()
-  ? async (count: number) => {
+  ? async (count: number, start?: number) => {
       console.warn("[dev] __user_populate");
-      const userCount = await __user_count!();
-      const users: User[] = [];
 
-      for (let i = userCount; i < count + userCount; i++) {
-        const user: User = await __user_create!({
-          data: {
-            id: `id${i}`,
-            username: `username${i}`,
-            password: `password${i}`,
-          },
-        });
+      start ??= await __user_count!();
+
+      const users: User[] = [];
+      for (let i = start; i < count + start; i++) {
+        const user: User = await __user_create!(i);
 
         users.push(user);
       }
