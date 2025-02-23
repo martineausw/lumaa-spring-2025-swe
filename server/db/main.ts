@@ -33,24 +33,39 @@ export type Task = {
   userId: string;
 };
 
-export async function createUser(username: string, password: string): User {
-  return await undefined;
+export async function insertUser(
+  username: string,
+  password: string
+): Promise<User> {
+  return new Promise(() => {});
 }
-export async function getUser(username: string): User {
-  return await undefined;
+
+export async function selectUserWithId(id: string): Promise<User> {
+  return new Promise(() => {});
 }
-export async function createTask(
+
+export async function selectUserWithUsername(username: string): Promise<User> {
+  return new Promise(() => {});
+}
+
+export async function insertTask(
   userId: string,
   title: string,
   description?: string
-): Task {
-  return await undefined;
+): Promise<Task> {
+  return new Promise(() => {});
 }
-export async function updateTask(id: string, task: object) {}
+
+export async function updateTask(id: string, task: object): Promise<Task> {
+  return new Promise(() => {});
+}
+
 export async function deleteTask(id: string) {}
-export async function getTask(id: string): Task {
-  return await undefined;
+
+export async function selectTask(id: string): Promise<Task> {
+  return new Promise(() => {});
 }
-export async function getTasks(userId?: string): Task[] {
-  return await [];
+
+export async function selectTasks(userId?: string): Promise<Task[]> {
+  return new Promise(() => {});
 }

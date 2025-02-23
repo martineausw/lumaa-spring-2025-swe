@@ -11,15 +11,14 @@ if (!isDev()) {
 import { describe, it } from "node:test";
 import assert from "node:assert";
 import {
-  User,
-  Task,
-  createUser,
-  getUser,
-  createTask,
+  selectUserWithId,
+  selectUserWithUsername,
+  insertUser,
+  insertTask,
+  selectTask,
+  selectTasks,
   updateTask,
   deleteTask,
-  getTask,
-  getTasks,
 } from "./main.ts";
 import {
   __user_delete_all,
@@ -58,7 +57,7 @@ describe("User", async () => {
     await __user_delete_all!();
 
     const expect = createExpectedUser(0);
-    const actual = await createUser("username0", "password0");
+    const actual = await insertUser("username0", "password0");
     const count = await __user_count!();
 
     assert.strictEqual(count, 1);
@@ -66,12 +65,22 @@ describe("User", async () => {
     assert.strictEqual(actual.password, expect.password);
   });
 
-  it("should get a user", async () => {
+  it("should get a user using username", async () => {
     await __user_delete_all!();
     await __user_create!(0);
 
     const expect = createExpectedUser(0);
-    const actual = await getUser("username0");
+    const actual = await selectUserWithUsername("username0");
+
+    assert.strictEqual(actual, expect);
+  });
+
+  it("should get a user using id", async () => {
+    await __user_delete_all!();
+    await __user_create!(0);
+
+    const expect = createExpectedUser(0);
+    const actual = await selectUserWithId("id0");
 
     assert.strictEqual(actual, expect);
   });
@@ -83,7 +92,7 @@ describe("Task", async () => {
     await __user_create!(0)!;
 
     const expect = createExpectedTask(0, 0);
-    const actual = await createTask("0", "title0", "description0");
+    const actual = await insertTask("0", "title0", "description0");
     const count = await __task_count!();
 
     assert.strictEqual(count, 1);
@@ -127,7 +136,7 @@ describe("Task", async () => {
     await __task_create!(0)!;
 
     const expect = createExpectedTask(0, 0, false);
-    const actual = await getTask("id0");
+    const actual = await selectTask("id0");
 
     assert.strictEqual(actual, expect);
   });
@@ -142,7 +151,7 @@ describe("Task", async () => {
 
     for (let i = 0; i < 10; i++) expect.push(createExpectedTask(i, 0, false));
 
-    const actual = await getTasks();
+    const actual = await selectTasks();
     assert.deepStrictEqual(actual, expect);
   });
 
@@ -170,9 +179,9 @@ describe("Task", async () => {
       expect2.push(createExpectedTask(i, 2));
     }
 
-    const actual0 = await getTasks("id0");
-    const actual1 = await getTasks("id1");
-    const actual2 = await getTasks("id2");
+    const actual0 = await selectTasks("id0");
+    const actual1 = await selectTasks("id1");
+    const actual2 = await selectTasks("id2");
 
     assert.deepStrictEqual(actual0, expect0);
     assert.deepStrictEqual(actual1, expect1);
