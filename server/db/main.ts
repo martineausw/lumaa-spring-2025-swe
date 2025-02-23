@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { webcrypto } from "crypto";
 import { devLog } from "utils/logger.js";
 
 const prisma = new PrismaClient();
@@ -63,24 +64,56 @@ export async function readUserUsername(username: string): Promise<User | null> {
   });
 }
 
-export async function readTask(id: string): Promise<Task> {
-  return new Promise(() => {});
-}
-
-export async function readTasks(userId?: string): Promise<Task[]> {
-  return new Promise(() => {});
-}
+const tasks = prisma.task;
 
 export async function createTask(
   userId: string,
   title: string,
   description?: string
-): Promise<Task> {
-  return new Promise(() => {});
+): Promise<Task | null> {
+  return await tasks.create({
+    data: {
+      title,
+      description,
+      userId,
+    },
+  });
 }
 
-export async function updateTask(id: string, task: object): Promise<Task> {
-  return new Promise(() => {});
+export async function readTask(id: string): Promise<Task | null> {
+  return await tasks.findUnique({
+    where: {
+      id,
+    },
+  });
 }
 
-export async function deleteTask(id: string) {}
+export async function readTasks(userId?: string): Promise<Task[] | null> {
+  return await tasks.findMany({
+    where: {
+      userId,
+    },
+  });
+}
+
+export async function updateTask(
+  id: string,
+  props: object
+): Promise<Task | null> {
+  return await tasks.update({
+    where: {
+      id,
+    },
+    data: {
+      ...props,
+    },
+  });
+}
+
+export async function deleteTask(id: string): Promise<Task | null> {
+  return await tasks.delete({
+    where: {
+      id,
+    },
+  });
+}

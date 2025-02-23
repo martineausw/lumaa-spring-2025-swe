@@ -96,14 +96,14 @@ describe("Task", async () => {
     await __user_create!(0)!;
 
     const expect = createExpectedTask(0, 0);
-    const actual = await createTask("0", "title0", "description0");
+    const actual = await createTask("id0", "title0", "description0");
     const count = await __task_count!();
 
     assert.strictEqual(count, 1);
-    assert.strictEqual(actual.title, expect.title);
-    assert.strictEqual(actual.description, expect.description);
-    assert.strictEqual(actual.isComplete, expect.isComplete);
-    assert.strictEqual(actual.userId, expect.userId);
+    assert.strictEqual(actual!.title, expect.title);
+    assert.strictEqual(actual!.description, expect.description);
+    assert.strictEqual(actual!.isComplete, expect.isComplete);
+    assert.strictEqual(actual!.userId, expect.userId);
   });
 
   it("should update a task", async () => {
@@ -115,10 +115,10 @@ describe("Task", async () => {
     const expect = createExpectedTask(0, 0, true);
     const actual = await updateTask("id0", { isComplete: true });
 
-    assert.strictEqual(actual.title, expect.title);
-    assert.strictEqual(actual.description, expect.description);
-    assert.strictEqual(actual.isComplete, expect.isComplete);
-    assert.strictEqual(actual.userId, expect.userId);
+    assert.strictEqual(actual!.title, expect.title);
+    assert.strictEqual(actual!.description, expect.description);
+    assert.strictEqual(actual!.isComplete, expect.isComplete);
+    assert.strictEqual(actual!.userId, expect.userId);
   });
 
   it("should delete a task", async () => {
@@ -129,7 +129,7 @@ describe("Task", async () => {
 
     deleteTask("id0");
 
-    const count = __task_count!();
+    const count = await __task_count!();
     assert.strictEqual(count, 0);
   });
 
@@ -142,7 +142,7 @@ describe("Task", async () => {
     const expect = createExpectedTask(0, 0, false);
     const actual = await readTask("id0");
 
-    assert.strictEqual(actual, expect);
+    assert.deepStrictEqual(actual, expect);
   });
 
   it("should get 10 tasks", async () => {
