@@ -1,50 +1,43 @@
-# React + TypeScript + Vite
+# Task Management Submission
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Admittedly, this project is incomplete due to tunnel vision and filling in gaps. It was challenging but rewarding. Unfortunately, in trying to structure everything well with testing. Other areas fell through the cracks towards the end. Thank you for the opportunity.
 
-Currently, two official plugins are available:
+## Video
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![demo](codebase.mov)
 
-## Expanding the ESLint configuration
+## Set Up
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Environment Variables
 
-- Configure the top-level `parserOptions` property like this:
+- DATABASE_URL, for Prisma ORM with the following format using PostgreSQL "postgresql://username:password@host:port/database_name"
+- AUTH_ACCESS, local secret for JWT authentication
+- AUTH_REFRESH, database tokens to refresh expired JWT for users
+- AUTH_PORT, integer port for auth-server
+- CONTENT_PORT, integer port for content server
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Backend
+
+```
+npm install
+npm run dev-db-migrate
+npm start
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### Frontend
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
 ```
+npm run dev
+```
+
+### Testing
+
+Setting up testing for the database is where I regrettably spent most of my time. Testing the database is destructive so guards are included in server/src/utils.
+
+```
+npm run dev-db-test
+```
+
+### Salary Expectations
+
+$900 / month

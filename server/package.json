@@ -6,6 +6,7 @@
     "doc": "docs"
   },
   "scripts": {
+    "start": "tsx ./index.ts",
     "dev-content-start": "tsx watch ./src/contentServer.ts",
     "dev-auth-start": "tsx watch ./src/auth/authServer.ts",
     "dev-db-start": "tsx watch ./src/database/prismaClient.ts",
