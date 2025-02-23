@@ -1,4 +1,7 @@
-import { __task_populate, __user_populate, isDev } from "./prismaUtils.ts";
+import {
+  __task_populate,
+  __user_populate,
+} from "../utils/prismaDevelopmentMacros.ts";
 
 if (!isDev()) {
   console.error(
@@ -27,7 +30,7 @@ import {
   __task_count,
   __user_create,
   __task_create,
-} from "./prismaUtils.ts";
+} from "../utils/prismaDevelopmentMacros.ts";
 
 const createExpectedUser = (index: number) => {
   return {

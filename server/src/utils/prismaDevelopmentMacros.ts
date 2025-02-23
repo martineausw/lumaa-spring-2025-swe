@@ -1,36 +1,37 @@
-export const isDev = () => process.env.NODE_ENV === "development" || undefined;
+import { __AUTH_REFRESH, __MODE_DEV } from "./environmentGuards.ts";
 
-import { DEBUG_CLIENT, User, Task } from "./prismaClient.ts";
+import { DEBUG_CLIENT, User, Task } from "../database/prismaClient.ts";
+import jwt from "jsonwebtoken";
 
-export const __user_delete_all = isDev()
+export const __user_delete_all = __MODE_DEV
   ? async () => {
       console.warn("[dev] __user_delete_all");
       await DEBUG_CLIENT!.user.deleteMany();
     }
   : undefined;
 
-export const __task_delete_all = isDev()
+export const __task_delete_all = __MODE_DEV
   ? async () => {
       console.warn("[dev] __task_delete_all");
       await DEBUG_CLIENT!.task.deleteMany();
     }
   : undefined;
 
-export const __user_count = isDev()
+export const __user_count = __MODE_DEV
   ? async () => {
       console.warn("[dev] __user_count");
       return await DEBUG_CLIENT!.user.count();
     }
   : undefined;
 
-export const __task_count = isDev()
+export const __task_count = __MODE_DEV
   ? async () => {
       console.warn("[dev] __task_count");
       return await DEBUG_CLIENT!.task.count();
     }
   : undefined;
 
-export const __user_create = isDev()
+export const __user_create = __MODE_DEV
   ? async (index?: number) => {
       console.warn("[dev] __user_create");
       index ??= await __user_count!();
@@ -44,7 +45,7 @@ export const __user_create = isDev()
     }
   : undefined;
 
-export const __task_create = isDev()
+export const __task_create = __MODE_DEV
   ? async (userId?: number, isComplete?: boolean, index?: number) => {
       console.warn("[dev] __user_create");
       userId ??= await __user_count!();
@@ -61,14 +62,25 @@ export const __task_create = isDev()
     }
   : undefined;
 
-export const __refresh_token_clear = isDev()
-  ? async (id?: string) => {
-      console.warn("[dev] __refresh_token_delete");
-      return await DEBUG_CLIENT!.task.deleteMany();
+export const __refresh_token_create = __MODE_DEV
+  ? async (id: string) => {
+      console.warn("[dev] __refresh_token_create");
+      return await DEBUG_CLIENT!.refreshTokens.create({
+        data: {
+          id: jwt.sign({ id: "id0" }, __AUTH_REFRESH!),
+        },
+      });
     }
   : undefined;
 
-export const __task_populate = isDev()
+export const __refresh_token_delete_all = __MODE_DEV
+  ? async (id?: string) => {
+      console.warn("[dev] __refresh_token_delete");
+      return await DEBUG_CLIENT!.refreshTokens.deleteMany();
+    }
+  : undefined;
+
+export const __task_populate = __MODE_DEV
   ? async (
       count: number,
       userId?: number,
@@ -88,7 +100,7 @@ export const __task_populate = isDev()
     }
   : undefined;
 
-export const __user_populate = isDev()
+export const __user_populate = __MODE_DEV
   ? async (count: number, start?: number) => {
       console.warn("[dev] __user_populate");
 

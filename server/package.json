@@ -6,9 +6,9 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev-content-start": "tsx watch contentServer.ts",
-    "dev-auth-start": "tsx watch authServer.ts",
-    "dev-db-start": "tsx watch prismaClient.ts",
+    "dev-content-start": "tsx watch ./src/contentServer.ts",
+    "dev-auth-start": "tsx watch ./src/auth/authServer.ts",
+    "dev-db-start": "tsx watch ./src/database/prismaClient.ts",
     "dev-db-migrate": "prisma migrate dev --name development",
     "dev-db-test": "node --import tsx --test db/*.test.ts"
   },

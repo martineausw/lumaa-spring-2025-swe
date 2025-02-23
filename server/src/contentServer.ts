@@ -1,5 +1,3 @@
-import("dotenv").then((dotenv) => dotenv.config());
-
 import express from "express";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
@@ -9,7 +7,12 @@ import {
   createTask,
   updateTask,
   deleteTask,
-} from "prismaClient.ts";
+} from "src/database/prismaClient.ts";
+import { IUserIdRequest } from "server.js";
+
+import("dotenv").then((dotenv) => dotenv.config());
+
+import { __CONTENT_PORT, __AUTH_ACCESS } from "src/utils/environmentGuards.ts";
 
 const app = express();
 
@@ -17,11 +20,13 @@ app.use(express.json());
 app.use(authenticate);
 
 app.get("/tasks", async (req, res) => {
-  res.status(200).json(await readTasks(req.userId));
+  const userReq = req as IUserIdRequest;
+  res.status(200).json(await readTasks(userReq.userId));
 });
 
 app.post("/tasks", validateTaskProperties, async (req, res) => {
-  await createTask(req.userId, req.body.title, req.body.description);
+  const userReq = req as IUserIdRequest;
+  await createTask(userReq.userId, req.body.title, req.body.description);
   res.status(300).send();
 });
 
@@ -43,7 +48,7 @@ app.delete("/tasks/:id", async (req, res) => {
   res.status(200).json(await deleteTask(req.params.id));
 });
 
-app.listen(process.env.CONTENT_PORT!);
+app.listen(__CONTENT_PORT);
 
 function authenticate(req: Request, res: Response, next: NextFunction) {
   const header = req.headers.authorization;
@@ -56,14 +61,15 @@ function authenticate(req: Request, res: Response, next: NextFunction) {
 
   let userId;
 
-  jwt.verify(token!, process.env.AUTH_ACCESS!, (err, id) => {
+  jwt.verify(token!, __AUTH_ACCESS!, (err, id) => {
     if (err !== null) res.status(401).send();
     userId = id;
   });
 
   if (userId === null) res.status(401).send();
 
-  req.userId = userId;
+  const userReq = req as IUserIdRequest;
+  userReq.userId = userId!;
 
   next();
 }
@@ -76,4 +82,8 @@ function validateTaskProperties(
   if (req.body.title === null) res.status(400).send();
   req.body.description ??= "";
   next();
+}
+
+export default function (port: number) {
+  app.listen();
 }

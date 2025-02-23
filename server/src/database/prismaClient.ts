@@ -1,12 +1,10 @@
 import { PrismaClient } from "@prisma/client";
-import { webcrypto } from "crypto";
-import { isDev } from "./prismaUtils.ts";
-import { devLog } from "utils/logger.ts";
+import { __MODE_DEV, __DATABASE_URL } from "src/utils/environmentGuards.ts";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  if (isDev()) {
+  if (__MODE_DEV) {
     await prisma.refreshTokens.deleteMany();
     await prisma.task.deleteMany();
     await prisma.user.deleteMany();
@@ -21,8 +19,7 @@ main()
     await prisma.$disconnect;
   });
 
-export const DEBUG_CLIENT =
-  process.env.NODE_ENV === "development" ? prisma : undefined;
+export const DEBUG_CLIENT = __MODE_DEV ? prisma : undefined;
 
 export type User = {
   id: string;
