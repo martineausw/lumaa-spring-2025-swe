@@ -6,15 +6,15 @@
     "doc": "docs"
   },
   "scripts": {
-    "dev-start-db": "nodemon db.js",
-    "dev-start-content": "nodemon main.js",
+    "dev-start-db": "tsx watch db/main.ts",
+    "dev-start-content": "tsx watch main.ts",
     "dev-migrate": "prisma migrate dev --name development",
     "test": "node --test"
   },
   "keywords": [],
   "author": "Seth Martineau",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "description": "Task management web app built using Express and PostgreSQL",
   "dependencies": {
     "@prisma/client": "^6.4.1",
@@ -27,7 +27,7 @@
     "@types/node": "^22.13.5",
     "nodemon": "^3.1.9",
     "prisma": "^6.4.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }
 }
