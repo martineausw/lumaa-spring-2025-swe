@@ -23,3 +23,8 @@ Content-Type: application/json
 {
   "token": "eyJhbGciOiJIUzI1NiJ9.MDQyMzMwOWEtZTMxOC00ZjhjLWEyYTYtNTI3ZGFjNDFlMWUw.onGTcGNKzV0cwHsr0IyItuXRtcaiZjgaud1SfIqciX8"
 }
+
+### 
+
+GET http://localhost:3000/tasks
+Authorization: Bearer 0

@@ -12,7 +12,7 @@ import {
   readRefreshToken,
   readUserId,
   readUserUsername,
-} from "../prismaClient.ts";
+} from "./prismaClient.ts";
 
 const app = express();
 
