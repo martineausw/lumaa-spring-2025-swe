@@ -61,6 +61,13 @@ export const __task_create = isDev()
     }
   : undefined;
 
+export const __refresh_token_clear = isDev()
+  ? async (id?: string) => {
+      console.warn("[dev] __refresh_token_delete");
+      return await DEBUG_CLIENT!.task.deleteMany();
+    }
+  : undefined;
+
 export const __task_populate = isDev()
   ? async (
       count: number,

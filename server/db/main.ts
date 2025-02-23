@@ -1,12 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 import { webcrypto } from "crypto";
-import { devLog } from "utils/logger.js";
+import { isDev } from "./dev/utils.ts";
+import { devLog } from "utils/logger.ts";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  devLog("clearing user table");
-  await prisma.user.deleteMany();
+  if (isDev()) {
+    await prisma.refreshTokens.deleteMany();
+    await prisma.task.deleteMany();
+    await prisma.user.deleteMany();
+  }
 }
 
 main()
@@ -32,6 +36,10 @@ export type Task = {
   description: string | null;
   isComplete: boolean;
   userId: string;
+};
+
+export type RefreshToken = {
+  id: string;
 };
 
 const users = prisma.user;
@@ -112,6 +120,38 @@ export async function updateTask(
 
 export async function deleteTask(id: string): Promise<Task | null> {
   return await tasks.delete({
+    where: {
+      id,
+    },
+  });
+}
+
+const refreshTokens = prisma.refreshTokens;
+
+export async function createRefreshToken(
+  id: string
+): Promise<RefreshToken | null> {
+  return await refreshTokens.create({
+    data: {
+      id,
+    },
+  });
+}
+
+export async function readRefreshToken(
+  id: string
+): Promise<RefreshToken | null> {
+  return await refreshTokens.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+export async function deleteRefreshToken(
+  id: string
+): Promise<RefreshToken | null> {
+  return await refreshTokens.delete({
     where: {
       id,
     },
